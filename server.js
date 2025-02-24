@@ -4,11 +4,15 @@ const dotenv = require('dotenv');
 
 
 const userRoutes = require("./routes/UserR");
-
+const appointmentRoutes = require('./routes/appointmentRoutes');
 
 dotenv.config();
 const app = express();
 app.use(express.json());//beche ya9ra les requests en format json
+
+// Routes
+app.use('/users', userRoutes);
+app.use('/appointments', appointmentRoutes);
 
 //Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
