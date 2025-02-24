@@ -1,3 +1,5 @@
+
+const mongoose = require("mongoose");
 const appointmentSchema = new mongoose.Schema({
     clientId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     professionalId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
