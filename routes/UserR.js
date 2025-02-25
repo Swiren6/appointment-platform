@@ -2,6 +2,7 @@
   const User = require("../models/User");
   const router = express.Router();
 
+
   // 1)Récupérer tous les utilisateurs
   router.get("/all", async (req, res) => {
     const users = await User.find();
