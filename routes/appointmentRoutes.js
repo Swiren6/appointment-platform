@@ -3,7 +3,7 @@ const Appointment = require('../models/Appointment');
 const router = express.Router();
 
 // Créer un rendez-vous
-router.post('/', async (req, res) => {
+router.post('/create', async (req, res) => {
   try {
     const appointment = new Appointment(req.body);
     await appointment.save();
@@ -14,13 +14,13 @@ router.post('/', async (req, res) => {
 });
 
 // Récupérer les rendez-vous
-router.get('/', async (req, res) => {
+router.get('/all', async (req, res) => {
   const appointments = await Appointment.find().populate('clientId professionalId');
   res.json(appointments);
 });
 
 // Modifier un rendez-vous
-router.put('/:id', async (req, res) => {
+router.put('/update/:id', async (req, res) => {
   try {
     const appointment = await Appointment.findByIdAndUpdate(req.params.id, req.body, { new: true });
     res.json(appointment);
@@ -30,7 +30,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Supprimer un rendez-vous
-router.delete('/:id', async (req, res) => {
+router.delete('/delete/:id', async (req, res) => {
   await Appointment.findByIdAndDelete(req.params.id);
   res.json({ message: 'Rendez-vous annulé' });
 });

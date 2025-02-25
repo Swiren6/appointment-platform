@@ -21,7 +21,7 @@ mongoose.connect(process.env.MONGO_URI)
   app.use("/users", userRoutes);//activer les routes users 
   app.use('/appointments', appointmentRoutes); //activer les routes appointments
   app.get("/", (req, res) => {
-    res.send("Welcome ");
+    res.send("hello ");
   });
 
 // machi el serveur
