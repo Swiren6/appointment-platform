@@ -11,7 +11,6 @@ const app = express();
 app.use(express.json());//beche ya9ra les requests en format json
 
 
-app.use('/appointments', appointmentRoutes);
 
 //Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
