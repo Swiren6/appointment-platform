@@ -1,38 +1,35 @@
-const express = require('express');
-const Appointment = require('../models/Appointment');
+const express = require("express");
+const Appointment = require("../models/Appointment");
+const sendEmail = require("../utils/email");
 const router = express.Router();
 
 // Créer un rendez-vous
-router.post('/create', async (req, res) => {
+router.post("/create", async (req, res) => {
   try {
-    const appointment = new Appointment(req.body);
+    const { clientId, professionalId, date, clientEmail } = req.body;
+
+    // Validation des champs requis
+    if (!clientId || !professionalId || !date || !clientEmail) {
+      return res.status(400).json({ message: "Tous les champs sont requis" });
+    }
+
+    const appointment = new Appointment({ clientId, professionalId, date });
     await appointment.save();
+
+    // Envoyer un email au client
+    const emailSubject = "Nouveau rendez-vous créé";
+    const emailText = `Votre rendez-vous du ${date.toLocaleString()} a été créé avec succès.`;
+    const emailHtml = `
+      <h1>Nouveau rendez-vous créé</h1>
+      <p>Votre rendez-vous du ${date.toLocaleString()} a été créé avec succès.</p>
+    `;
+    await sendEmail(clientEmail, emailSubject, emailText, emailHtml);
+
     res.status(201).json(appointment);
   } catch (error) {
+    console.error("Erreur lors de la création du rendez-vous :", error);
     res.status(400).json({ error: error.message });
   }
-});
-
-// Récupérer les rendez-vous
-router.get('/all', async (req, res) => {
-  const appointments = await Appointment.find().populate('clientId professionalId');
-  res.json(appointments);
-});
-
-// Modifier un rendez-vous
-router.put('/update/:id', async (req, res) => {
-  try {
-    const appointment = await Appointment.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.json(appointment);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-});
-
-// Supprimer un rendez-vous
-router.delete('/delete/:id', async (req, res) => {
-  await Appointment.findByIdAndDelete(req.params.id);
-  res.json({ message: 'Rendez-vous annulé' });
 });
 
 module.exports = router;
