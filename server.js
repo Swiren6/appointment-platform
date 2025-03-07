@@ -3,14 +3,17 @@
   const dotenv = require('dotenv');
 
 
+
 const userRoutes = require("./routes/UserR");
 const appointmentRoutes = require('./routes/appointmentRoutes');
 
 
 require('dotenv').config();
-  const app = express();
-  app.use(express.json());//beche ya9ra les requests en format json
-
+const app = express();
+app.use(express.json());//beche ya9ra les requests en format json
+//beche ya9ra dossier public 
+app.use(express.static("public"));
+app.use("/api/appointments", appointmentRoutes); // Utilisez "/api/appointments" comme préfixe
 
 
 //Connect to MongoDB
