@@ -3,33 +3,284 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Liste des rendez-vous</title>
-  <link rel="stylesheet" href="/css/styles.css">
+  <title>Gestion des rendez-vous</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* Reset de base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      line-height: 1.6;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      background-color: #007bff;
+      color: #fff;
+      padding: 20px 0;
+      text-align: center;
+    }
+
+    .header__title {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    /* Boutons */
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn--primary {
+      background-color: #28a745;
+      color: #fff;
+    }
+
+    .btn--primary:hover {
+      background-color: #218838;
+    }
+
+    .btn--small {
+      padding: 5px 10px;
+      font-size: 0.9rem;
+    }
+
+    .btn--edit {
+      background-color: #ffc107;
+      color: #000;
+    }
+
+    .btn--edit:hover {
+      background-color: #e0a800;
+    }
+
+    .btn--delete {
+      background-color: #dc3545;
+      color: #fff;
+    }
+
+    .btn--delete:hover {
+      background-color: #c82333;
+    }
+
+    /* Table */
+    .table-responsive {
+      overflow-x: auto;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .table th,
+    .table td {
+      padding: 12px 15px;
+      text-align: left;
+    }
+
+    .table th {
+      background-color: #007bff;
+      color: #fff;
+      font-weight: 500;
+    }
+
+    .table tbody tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+
+    .table tbody tr:hover {
+      background-color: #e9ecef;
+    }
+
+    /* Statut */
+    .status {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .status--confirmed {
+      background-color: #28a745;
+      color: #fff;
+    }
+
+    .status--pending {
+      background-color: #ffc107;
+      color: #000;
+    }
+
+    /* Footer */
+    .footer {
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      padding: 20px 0;
+      margin-top: 40px;
+    }
+
+    .footer p {
+      margin: 0;
+    }
+
+    /* Animation */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>Gestion des rendez-vous</h1>
-    <a href="/create.html" class="btn">Créer un rendez-vous</a>
+  <header class="header">
+    <div class="container">
+      <h1 class="header__title">Gestion des rendez-vous</h1>
+      <a href="createappointment.html" class="btn btn--primary">Créer un rendez-vous</a>
+    </div>
   </header>
 
-  <main>
-    <h2>Liste des rendez-vous</h2>
-    <table id="appointments-table">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Client</th>
-          <th>Professionnel</th>
-          <th>Statut</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Les rendez-vous seront insérés ici dynamiquement -->
-      </tbody>
-    </table>
+  <main class="main">
+    <div class="container">
+      <h2 class="main__title">Liste des rendez-vous</h2>
+      <div class="table-responsive">
+        <table id="appointments-table" class="table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Client</th>
+              <th>Professionnel</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="appointments-body">
+
+          </tbody>
+        </table>
+      </div>
+    </div>
   </main>
 
-  <script src="/js/main.js"></script>
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2023 Gestion des rendez-vous. Tous droits réservés.</p>
+    </div>
+  </footer>
+
+  <script>
+    async function loadAppointments() {
+      try {
+        const response = await fetch('http://localhost:5000/api/appointments');
+        const data = await response.json();
+
+        if (response.ok) {
+          displayAppointments(data);
+        } else {
+          throw new Error(data.message || 'Erreur lors du chargement des rendez-vous');
+        }
+      } catch (error) {
+        console.error('Erreur :', error);
+        alert(error.message);
+      }
+    }
+
+    function displayAppointments(appointments) {
+      const tbody = document.getElementById('appointments-body');
+      tbody.innerHTML = ''; 
+
+      appointments.forEach(appointment => {
+        const row = document.createElement('tr');
+        row.classList.add('fade-in'); 
+
+        row.innerHTML = `
+          <td>${new Date(appointment.date).toLocaleString()}</td>
+          <td>${appointment.clientId}</td>
+          <td>${appointment.professionalId}</td>
+          <td>
+            <span class="status status--${appointment.status}">
+              ${appointment.status === 'confirmed' ? 'Confirmé' : 'En attente'}
+            </span>
+          </td>
+          <td>
+            <button class="btn btn--small btn--edit" data-id="${appointment._id}">Modifier</button>
+            <button class="btn btn--small btn--delete" data-id="${appointment._id}">Supprimer</button>
+          </td>
+        `;
+
+        tbody.appendChild(row);
+      });
+
+      addEventListeners();
+    }
+
+    function addEventListeners() {
+      document.querySelectorAll('.btn--edit').forEach(button => {
+        button.addEventListener('click', () => {
+          const appointmentId = button.getAttribute('data-id');
+          alert(`Modifier le rendez-vous avec l'ID : ${appointmentId}`);
+          
+          window.location.href = `./edit.html?id=${appointmentId}`;
+        });
+      });
+
+      document.querySelectorAll('.btn--delete').forEach(button => {
+        button.addEventListener('click', async () => {
+          const appointmentId = button.getAttribute('data-id');
+          if (confirm('Êtes-vous sûr de vouloir supprimer ce rendez-vous ?')) {
+            try {
+              const response = await fetch(`http://localhost:5000/api/appointments/${appointmentId}`, {
+                method: 'DELETE',
+              });
+
+              if (response.ok) {
+                alert('Rendez-vous supprimé avec succès !');
+                loadAppointments(); 
+              } else {
+                throw new Error('Erreur lors de la suppression du rendez-vous');
+              }
+            } catch (error) {
+              console.error('Erreur :', error);
+              alert(error.message);
+            }
+          }
+        });
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', loadAppointments);
+  </script>
 </body>
 </html>
