@@ -1,6 +1,7 @@
   const express = require('express');
   const mongoose = require('mongoose');
   const dotenv = require('dotenv');
+  const cors = require("cors");
 
 
 
@@ -14,6 +15,7 @@ app.use(express.json());//beche ya9ra les requests en format json
 //beche ya9ra dossier public 
 app.use(express.static("public"));
 app.use("/api/appointments", appointmentRoutes); // Utilisez "/api/appointments" comme préfixe
+app.use(cors());
 
 
 //Connect to MongoDB
