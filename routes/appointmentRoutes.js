@@ -1,14 +1,14 @@
 const express = require("express");
 const {
-  createRendezVous,
-  updateRendezVous,
-  cancelRendezVous,
-  confirmRendezVous,
-  getMyRendezVous,
-  getAllRendezVous,
-} = require("../controller/appointmentController");
+    createRendezVous,
+    updateRendezVous,
+    cancelRendezVous,
+    confirmRendezVous,
+    getMyRendezVous,
+    getAllRendezVous,
+} = require("../controller/appointmentController"); // Vérifiez le chemin
 
-const { authMiddleware, roleMiddleware } = require("../middlewares/authMiddleware"); 
+const { authMiddleware, roleMiddleware } = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 

@@ -1,11 +1,11 @@
 const express = require('express');
-const router = express.Router();
 const disponibiliteController = require('../controller/disponibiliteController'); // Assurez-vous que le chemin est correct
 
+const router = express.Router();
+
 // Route pour récupérer les disponibilités d'un professionnel
-router.get('/disponibilites/:professionnelId', disponibiliteController.getDisponibilites);
+router.get('/disponibilites', disponibiliteController.getDisponibilites);  // Assurez-vous que la route est correcte
 
-// Route pour récupérer les rendez-vous d'un utilisateur (client ou professionnel)
-router.get('/rendezvous/:utilisateurId/:role', disponibiliteController.getRendezVous);
-
+// Route pour ajouter une disponibilité
+router.post('/add', disponibiliteController.addDisponibilite);
 module.exports = router;

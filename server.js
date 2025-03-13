@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const authRoutes = require('./routes/authRoutes');
 const disponibiliteRoutes = require('./routes/disponibiliteRoutes');
+const rendezVousRoutes = require('./routes/appointmentRoutes');  // Assure-toi que ce fichier existe
 require('dotenv').config();
 
 const app = express();
@@ -9,10 +10,14 @@ const app = express();
 // Middleware pour parser le JSON
 app.use(express.json());
 
+// Routes
+app.use('/api', disponibiliteRoutes);  // Route pour disponibilités
+app.use("/api/rendezvous", rendezVousRoutes);  // Route pour rendez-vous
 
-app.use('/api', disponibiliteRoutes);
+// Route pour authentification
+app.use('/auth', authRoutes);
 
-
+// Connexion à MongoDB
 mongoose.connect(process.env.MONGODB_URI)
     .then(() => {
         console.log("✅Connected to MongoDB ");
@@ -21,13 +26,8 @@ mongoose.connect(process.env.MONGODB_URI)
         console.error("🚩Failed to connect to MongoDB :", err);
     });
 
-
-app.use('/auth', authRoutes);
-
 // Démarrer le serveur
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log('✅Server is running on port '+PORT);
+    console.log('✅Server is running on port ' + PORT);
 });
-const rendezVousRoutes = require("./routes/appointmentRoutes");
-app.use("/api/rendezvous", rendezVousRoutes);
