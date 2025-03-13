@@ -6,7 +6,7 @@ const {
   confirmRendezVous,
   getMyRendezVous,
   getAllRendezVous,
-} = require("../controllers/rendezVousControllers");
+} = require("../controller/appointmentControllers");
 
 const { authMiddleware, roleMiddleware } = require("../middlewares/authMiddleware"); // ✅ Vérifie l'importation
 
