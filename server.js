@@ -1,37 +1,33 @@
-  const express = require('express');
-  const mongoose = require('mongoose');
-  const dotenv = require('dotenv');
-  const cors = require("cors");
-
-
-
-const userRoutes = require("./routes/UserR");
-const appointmentRoutes = require('./routes/appointmentRoutes');
-
-
+const express = require('express');
+const mongoose = require('mongoose');
+const authRoutes = require('./routes/authRoutes');
+const disponibiliteRoutes = require('./routes/disponibiliteRoutes');
 require('dotenv').config();
+
 const app = express();
-app.use(express.json());//beche ya9ra les requests en format json
-//beche ya9ra dossier public 
-app.use(express.static("public"));
-app.use("/api/appointments", appointmentRoutes); // Utilisez "/api/appointments" comme préfixe
-app.use(cors());
+
+// Middleware pour parser le JSON
+app.use(express.json());
 
 
-//Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI)
-
-  .then(() => console.log("✅ Connecté à MongoDB"))
-  .catch(err => console.error(err));
-  app.use("/users", userRoutes);//activer les routes users 
-  app.use('/appointments', appointmentRoutes); //activer les routes appointments
-  app.get("/", (req, res) => {
-    res.send("hello ");
-  });
+app.use('/api', disponibiliteRoutes);
 
 
-  // machi el serveur
-  const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => {
-    console.log(`✅Serveur démarré sur le port ${PORT}`);
-  });
+mongoose.connect(process.env.MONGODB_URI)
+    .then(() => {
+        console.log("Connected to MongoDB Atlas");
+    })
+    .catch((err) => {
+        console.error("Failed to connect to MongoDB Atlas:", err);
+    });
+
+
+app.use('/auth', authRoutes);
+
+// Démarrer le serveur
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+    console.log('Server is running on port ${PORT}');
+});
+const rendezVousRoutes = require("./routes/rendezVousRoutes");
+app.use("/api/rendezvous", rendezVousRoutes);

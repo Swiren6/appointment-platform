@@ -1,21 +1,15 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema({
-  firstName: { type: String, required: true }, 
-  lastName: { type: String, required: true },  
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  role: { type: String, enum: ["admin", "user"], default: "user" },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
+const utilisateurSchema = new mongoose.Schema({
+    nom: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    motDePasse: { type: String, required: true },
+    dateNaissance: { type: Date, required: true },
+    cin:{type:Number, required: true },
+    numTel:{type:Number, required: true },
+    role: { type: String, enum: ['client', 'professionnel', 'admin'], required: true },
 });
 
-// Hasher le mot de passe 
-userSchema.pre("save", async function (next) {
-  if (this.isModified("password")) {
-    this.password = await bcrypt.hash(this.password, 10);
-  }
-  next();
-});
-module.exports = mongoose.model("User", userSchema);
+const Utilisateur = mongoose.model('Utilisateur', utilisateurSchema);
 
+module.exports = Utilisateur;
