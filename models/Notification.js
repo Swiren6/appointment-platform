@@ -1,9 +1,13 @@
-const mongoose = require("mongoose");
+
+const mongoose = require('mongoose');
 
 const notificationSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  message: { type: String, required: true },
-  read: { type: Boolean, default: false },
-}, { timestamps: true });
+    type: { type: String, required: true, enum: ['rappel', 'annulation', 'confirmation'] }, // Type de notification
+    message: { type: String, required: true }, // Contenu de la notification
+    destinataireId: { type: mongoose.Schema.Types.ObjectId, ref: 'Utilisateur', required: true }, // Référence à l'utilisateur destinataire
+    dateEnvoi: { type: Date, default: Date.now }, // Date d'envoi de la notification
+});
 
-module.exports = mongoose.model("Notification", notificationSchema);
+const Notification = mongoose.model('Notification', notificationSchema);
+
+module.exports = Notification;
