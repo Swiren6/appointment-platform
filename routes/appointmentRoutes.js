@@ -6,9 +6,9 @@ const {
   confirmRendezVous,
   getMyRendezVous,
   getAllRendezVous,
-} = require("../controllers/rendezVousControllers");
+} = require("../controller/appointmentController");
 
-const { authMiddleware, roleMiddleware } = require("../middlewares/authMiddleware"); // ✅ Vérifie l'importation
+const { authMiddleware, roleMiddleware } = require("../middlewares/authMiddleware"); 
 
 const router = express.Router();
 
