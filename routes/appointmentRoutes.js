@@ -1,35 +1,27 @@
 const express = require("express");
-const Appointment = require("../models/Appointment");
-const sendEmail = require("../utils/email");
+const {
+  createRendezVous,
+  updateRendezVous,
+  cancelRendezVous,
+  confirmRendezVous,
+  getMyRendezVous,
+  getAllRendezVous,
+} = require("../controllers/rendezVousControllers");
+
+const { authMiddleware, roleMiddleware } = require("../middlewares/authMiddleware"); // ✅ Vérifie l'importation
+
 const router = express.Router();
 
-// Créer un rendez-vous
-router.post("/create", async (req, res) => {
-  try {
-    const { clientId, professionalId, date, clientEmail } = req.body;
+// Routes pour les clients
+router.post("/create", authMiddleware, roleMiddleware(["client"]), createRendezVous);
+router.put("/update/:id", authMiddleware, roleMiddleware(["client"]), updateRendezVous);
+router.put("/cancel/:id", authMiddleware, roleMiddleware(["client", "professionnel"]), cancelRendezVous);
 
-    // Validation des champs requis
-    if (!clientId || !professionalId || !date || !clientEmail) {
-      return res.status(400).json({ message: "Tous les champs sont requis" });
-    }
+// Routes pour les professionnels
+router.put("/confirm/:id", authMiddleware, roleMiddleware(["professionnel"]), confirmRendezVous);
+router.get("/my", authMiddleware, roleMiddleware(["client", "professionnel"]), getMyRendezVous);
 
-    const appointment = new Appointment({ clientId, professionalId, date });
-    await appointment.save();
-
-    // Envoyer un email au client
-    const emailSubject = "Nouveau rendez-vous créé";
-    const emailText = `Votre rendez-vous du ${date.toLocaleString()} a été créé avec succès.`;
-    const emailHtml = `
-      <h1>Nouveau rendez-vous créé</h1>
-      <p>Votre rendez-vous du ${date.toLocaleString()} a été créé avec succès.</p>
-    `;
-    await sendEmail(clientEmail, emailSubject, emailText, emailHtml);
-
-    res.status(201).json(appointment);
-  } catch (error) {
-    console.error("Erreur lors de la création du rendez-vous :", error);
-    res.status(400).json({ error: error.message });
-  }
-});
+// Routes pour l'administrateur
+router.get("/all", authMiddleware, roleMiddleware(["admin"]), getAllRendezVous);
 
 module.exports = router;
