@@ -15,10 +15,10 @@ app.use('/api', disponibiliteRoutes);
 
 mongoose.connect(process.env.MONGODB_URI)
     .then(() => {
-        console.log("Connected to MongoDB Atlas");
+        console.log("✅Connected to MongoDB ");
     })
     .catch((err) => {
-        console.error("Failed to connect to MongoDB Atlas:", err);
+        console.error("🚩Failed to connect to MongoDB :", err);
     });
 
 
@@ -27,7 +27,7 @@ app.use('/auth', authRoutes);
 // Démarrer le serveur
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-    console.log('Server is running on port ${PORT}');
+    console.log('✅Server is running on port '+PORT);
 });
-const rendezVousRoutes = require("./routes/rendezVousRoutes");
+const rendezVousRoutes = require("./routes/appointmentRoutes");
 app.use("/api/rendezvous", rendezVousRoutes);
