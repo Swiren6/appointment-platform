@@ -6,14 +6,16 @@ const {
     confirmRendezVous,
     getMyRendezVous,
     getAllRendezVous,
-} = require("../controller/appointmentController"); // Vérifiez le chemin
+} = require("../controller/appointmentController"); 
 
 const { authMiddleware, roleMiddleware } = require("../middlewares/authMiddleware");
 
 const router = express.Router();
+const rendezVousController = require('../controller/appointmentController');
+
 
 // Routes pour les clients
-router.post("/create", authMiddleware, roleMiddleware(["client"]), createRendezVous);
+router.post('/create', authMiddleware, roleMiddleware(["client"]), createRendezVous);
 router.put("/update/:id", authMiddleware, roleMiddleware(["client"]), updateRendezVous);
 router.put("/cancel/:id", authMiddleware, roleMiddleware(["client", "professionnel"]), cancelRendezVous);
 

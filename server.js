@@ -1,11 +1,16 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require("cors");  
+
 const authRoutes = require('./routes/authRoutes');
 const disponibiliteRoutes = require('./routes/disponibiliteRoutes');
 const rendezVousRoutes = require('./routes/appointmentRoutes');  // Assure-toi que ce fichier existe
+const notificationRoutes = require('./routes/NotificationRoutes');  // Assure-toi que ce fichier existe
 require('dotenv').config();
 
 const app = express();
+app.use(cors());  
+
 
 // Middleware pour parser le JSON
 app.use(express.json());
@@ -16,6 +21,8 @@ app.use("/api/rendezvous", rendezVousRoutes);  // Route pour rendez-vous
 
 // Route pour authentification
 app.use('/auth', authRoutes);
+
+app.use('/api/notifications', notificationRoutes);
 
 // Connexion à MongoDB
 mongoose.connect(process.env.MONGODB_URI)

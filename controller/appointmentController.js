@@ -7,40 +7,32 @@ exports.createRendezVous = async (req, res) => {
     try {
         // Récupérer les données de la requête
         const { date, heure, professionnelId } = req.body;
+        const clientId = req.user?.userId; // 🔥 Assurez-vous que `req.user` est bien défini
 
-        // Convertir professionnelId en ObjectId avec 'new'
-        const professionnelObjectId = new mongoose.Types.ObjectId(professionnelId);
-
-        // Vérifier si le professionnel est disponible
-        const disponibilite = await Disponibilite.findOne({
-            professionnelId: professionnelObjectId,
-            date,
-            heure
-        });
-        
-        if (!disponibilite) {
-            return res.status(400).json({ msg: "Le professionnel n'est pas disponible à cette heure." });
+        // Vérifier si tous les champs obligatoires sont présents
+        if (!date || !heure || !professionnelId) {
+            return res.status(400).json({ message: "Tous les champs sont requis." });
         }
 
-        // Créer un nouveau rendez-vous
-        const rendezVous = new RendezVous({
+        // Création du rendez-vous
+        const nouveauRendezVous = new RendezVous({
             date,
             heure,
-            statut: "en attente",
-            clientId: req.user.id, // ID de l'utilisateur connecté (client)
-            professionnelId: professionnelObjectId,
+            professionnelId,
+            clientId, 
+            statut: "en attente"
         });
 
-        // Sauvegarder le rendez-vous en base de données
-        await rendezVous.save();
+        await nouveauRendezVous.save();
+        res.status(201).json({ message: "Rendez-vous créé avec succès.", rendezVous: nouveauRendezVous });
 
-        // Répondre avec succès
-        res.status(201).json({ msg: "Rendez-vous créé avec succès.", rendezVous });
     } catch (error) {
-        console.error("Erreur lors de la création du rendez-vous :", error);
-        res.status(500).json({ msg: "Erreur serveur." });
+        res.status(500).json({ message: "Erreur lors de la création du rendez-vous.", error: error.message });
     }
 };
+
+
+
 
 // 📌 Modifier un rendez-vous (Client)
 exports.updateRendezVous = async (req, res) => {
