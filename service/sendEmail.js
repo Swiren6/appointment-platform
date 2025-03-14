@@ -5,7 +5,7 @@ const User = require("../models/User");
 const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-        user: 'abidi.chayma83@gmail.com',
+        user: 'safamathlouthi06@gmail.com',
         pass: 'hgul hjlp pqsb lxfn',  // Assurez-vous d'utiliser un mot de passe d'application pour Gmail
     },
 });
@@ -39,7 +39,7 @@ const sendEmail = async (appointmentId, subject, text) => {
 
         // Définir les options de l'email
         const mailOptions = {
-            from: 'chaymaabididev@gmail.com',  // Corriger l'adresse email
+            from: 'safamathlouthi06@gmail.com',  // Corriger l'adresse email
             to: patientEmail,
             subject: emailSubject,
             text: emailText,
